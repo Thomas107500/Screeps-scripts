@@ -1,3 +1,4 @@
 .sync
 node_modules/
 ScreepsAutocomplete/
+package-lock.json
