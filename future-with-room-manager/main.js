@@ -18,6 +18,14 @@ if (Memory.processingQueue == undefined) {Memory.processingQueue = [];}
 */
 
 module.exports.loop = function () {
+    
+    for(var creepName in Memory.creeps) {
+        if(!Game.creeps[creepName]) {
+            delete Memory.creeps[creepName];
+            console.log('Clearing non-existing creep memory:', name);
+        }
+    }
+    
     colonyManager.run();
 
     for(var name in Game.creeps) {
@@ -91,12 +99,7 @@ module.exports.loop = function () {
         }
     }
 
-    for(var name in Memory.creeps) {
-        if(!Game.creeps[name]) {
-            delete Memory.creeps[name];
-            console.log('Clearing non-existing creep memory:', name);
-        }
-    }
+    
     
     var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
     var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
