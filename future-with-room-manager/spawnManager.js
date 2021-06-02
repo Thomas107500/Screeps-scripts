@@ -1,6 +1,12 @@
+var Spawner = require("spawner");
+
 module.exports = class SpawnManager{
     constructor(room){
         this.room = room;
+        this.spawnerList = [];
+        for(var spawn of this.room.find(FIND_MY_SPAWNS)){
+            this.spawnerList.push(new Spawner(spawn,false));
+        }
     }
     /**
      * Try to spawn a creep base on given parameter.
@@ -10,11 +16,12 @@ module.exports = class SpawnManager{
     * @returns {(string|boolean)} Returns the creep's name if succeeded, false otherwise
     */
     trySpawnCreep(body,creepType,options){
-        for(var spawn of this.room.find(FIND_MY_SPAWNS)){
-            if(spawn.spawning === null){
-                if(spawn.spawnCreep(body,creepType+Game.time,{dryrun: true}) !== ERR_NOT_ENOUGH_ENERGY){
+        for(var spawner of this.spawnerList){
+            if(spawner.spawn.spawning === null && !spawner.isQueued){
+                if(spawner.spawn.spawnCreep(body,creepType+Game.time,{dryrun: true}) !== ERR_NOT_ENOUGH_ENERGY){
                     let creepName = creepType+Game.time;
-                    spawn.spawnCreep(body,creepName,options);
+                    spawner.spawn.spawnCreep(body,creepName,options);
+                    spawner.isQueued = true;
                     return creepName;
                 }else{
                     return false;
@@ -29,11 +36,11 @@ module.exports = class SpawnManager{
     */
     getSpawningCreeps(){
         let spawningList = [];
-        for(var spawn of this.room.find(FIND_MY_SPAWNS)){
-            if(spawn.spawning === null){
+        for(var spawner of this.spawnerList){
+            if(spawner.spawn.spawning === null){
                 continue;
             }
-            spawningList.push(spawn.spawning.name);
+            spawningList.push(spawner.spawn.spawning.name);
         }
         return spawningList;
     }

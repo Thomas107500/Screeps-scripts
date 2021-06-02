@@ -13,24 +13,24 @@ module.exports = class RoomManager {
     run(){
         console.log(`RoomManager processing room ${this.room.name}...`);
         this.jobManager.updateJobList();
-        for(var job of this.room.memory.jobList){
-            switch(job.role){
+        for(var i=0; i<this.room.memory.jobList.length; i++){
+            switch(this.room.memory.jobList[i].role){
                 case "harvester":
                     //each source need at least 5 WORK part to be drain within 300 ticks
                     let count = 0;
-                    for(var creepName of job.creepList){
+                    for(var creepName of this.room.memory.jobList[i].creepList){
                         if(Game.creeps[creepName] === undefined && !this.spawnManager.getSpawningCreeps().includes(creepName)){
-                            job.creepList.splice(job.creepList.indexOf(creepName),1);
+                            this.room.memory.jobList[i].creepList.splice(this.room.memory.jobList[i].creepList.indexOf(creepName),1);
                         }else{
                             count += Game.creeps[creepName].getActiveBodyparts(WORK);
                         }
                     }
                     if(count < 5){
-                        var result = this.spawnManager.trySpawnCreep(this.spawnManager.getHarvesterBody(),"Harvester",{memory: {role: 'harvester', targetId: null}});
+                        let result = this.spawnManager.trySpawnCreep(this.spawnManager.getHarvesterBody(),"Harvester",{memory: {role: 'harvester', targetId: null}});
                         if(result !== false){
                             //TODO: not finished yet, still lacking code to remove creep from creepList and testing whether job completed in role.harvester
-                            job.creepList.push(result);
-                            Game.creeps[result].memory.targetId = job.targetId;
+                            this.room.memory.jobList[i].creepList.push(result);
+                            Game.creeps[result].memory.targetId = this.room.memory.jobList[i].targetId;
                         }
                     }
                     break;
