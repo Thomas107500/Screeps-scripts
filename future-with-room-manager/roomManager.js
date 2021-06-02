@@ -28,7 +28,6 @@ module.exports = class RoomManager {
                     if(count < 5){
                         let result = this.spawnManager.trySpawnCreep(this.spawnManager.getHarvesterBody(),"Harvester",{memory: {role: 'harvester', targetId: null}});
                         if(result !== false){
-                            //TODO: not finished yet, still lacking code to remove creep from creepList and testing whether job completed in role.harvester
                             this.room.memory.jobList[i].creepList.push(result);
                             Game.creeps[result].memory.targetId = this.room.memory.jobList[i].targetId;
                         }

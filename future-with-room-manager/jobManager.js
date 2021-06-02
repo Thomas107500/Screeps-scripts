@@ -20,6 +20,16 @@ module.exports = class JobManager{
                 this.room.memory.jobList.push(job);
             }
         }
+    
+        this.room.memory.jobList.sort((a, b) => {
+            if (a.priority < b.priority) {
+                return -1;
+            }
+            if (a.priority > b.priority) {
+                return 1;
+            }
+            return 0;
+          });
     }
     /**
     * Check whether a Job exist in the job list.
